@@ -1,0 +1,130 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Your written file · Highlight medicine</title>
+<style>
+:root{--navy:#1b2a4e;--or:#e8792b;--bg:#f3f5f9;--ink:#14213d;--muted:#5a6681;--line:#dfe4ee}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:var(--navy);color:#fff;border-bottom:3px solid var(--or);padding:14px 16px;text-align:center}
+header b{font-size:20px;display:block} header span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.75}
+main{max-width:860px;margin:0 auto;padding:18px 16px 60px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+h1{font-size:22px;margin:0 0 4px}.sub{color:var(--muted);font-size:13px}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+button{font:600 15px system-ui,sans-serif;border:0;border-radius:10px;padding:12px 18px;cursor:pointer;background:var(--navy);color:#fff}
+button.or{background:var(--or)} button:disabled{opacity:.5}
+.lec{background:var(--navy);color:#fff;font-weight:700;padding:8px 12px;border-bottom:3px solid var(--or);border-radius:10px 10px 0 0;margin-top:14px}
+.q{background:#fff6d6;border-left:4px solid var(--or);padding:7px 10px;font-weight:600;margin:8px 0 0}
+.box{background:#fff;border:1px solid var(--line);border-top:0;border-radius:0 0 10px 10px;padding:4px 12px 12px}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-weight:600;font-size:14px}
+.err{color:#c43c3c}
+</style></head><body>
+<header><b>Highlight medicine</b><span>Your written file</span></header>
+<main id="m"><div class="card">Loading…</div></main><div id="toast" hidden></div>
+<script>
+let LECS=[],ALL=[],S={myf:{}};const dl=null;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function toast(m){const t=document.getElementById("toast");t.textContent=m;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,3500)}
+function saveBlob(name,blob){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),30000)}
+function myIds(){return ALL.filter(q=>S.myf&&S.myf[q.id]).map(q=>q.id)}
+function myGroups(){const g=[];LECS.forEach((l,li)=>{const qs=l.qs.filter(q=>S.myf&&S.myf[q.id]);if(qs.length)g.push({n:l.n,qs})});return g}
+function myFileName(ext){const d=new Date();return `My written file - Highlight medicine (${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}).${ext}`}
+function myText(){
+  let t="Highlight medicine — My written file\n\n";
+  for(const g of myGroups()){t+="■ "+g.n.toUpperCase()+"\n\n";for(const q of g.qs){const d=document.createElement("div");d.innerHTML=q.a;
+    d.querySelectorAll("li").forEach(li=>li.textContent="★ "+li.textContent.trim()+"\n");d.querySelectorAll("tr").forEach(tr=>{tr.textContent=[...tr.children].map(c=>c.textContent.trim()).join(" | ")+"\n"});
+    t+="Q: "+q.q+"\n"+d.textContent.replace(/[ \t]+/g," ").replace(/\n\s+/g,"\n").trim()+"\n\n"}}
+  return t;
+}
+function myDocParts(){
+  const css=`body{font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#14213d}
+  .hdr{text-align:center;color:#7b2ff7;font-weight:bold;font-size:10pt;border-bottom:1.5pt solid #e8792b;padding-bottom:3pt;margin-bottom:8pt}
+  h1{font-size:20pt;color:#1b2a4e;margin:0 0 2pt} .sub{color:#5a6681;font-size:10pt;margin-bottom:12pt}
+  table.lect,table.qt{margin:0;width:100%} table.lect td,table.qt td{border:none} .lec{background:#1b2a4e;color:#fff;font-size:13pt;font-weight:bold;padding:5pt 8pt;border-bottom:3pt solid #e8792b;margin:16pt 0 8pt}
+  .q{background:#fff6d6;border-left:5pt solid #e8792b;padding:5pt 8pt;font-weight:bold;margin:10pt 0 4pt}
+  p.pt{margin:1pt 0 1pt 14pt;text-indent:-12pt} .st{color:#e8792b}
+  table{border-collapse:collapse;margin:4pt 0 6pt;width:100%} th{background:#1b2a4e;color:#fff;border:.5pt solid #1b2a4e;padding:3pt 5pt;font-size:10pt;text-align:left} td{border:.5pt solid #c9d1e3;padding:3pt 5pt;font-size:10pt} tr.even td{background:#eef3fb}
+  mark{background:#fff176}`;
+  let b=`<div class="hdr">Highlight medicine</div><h1>My written file</h1><div class="sub">${myIds().length} questions with model answers · arranged by lecture</div>`;
+  for(const g of myGroups()){b+=`<table class="lect" width="100%" cellpadding="0" cellspacing="0"><tr><td class="lec">${esc(g.n)}</td></tr></table>`;let k=0;
+    for(const q of g.qs){k++;const d=document.createElement("div");d.innerHTML=q.a;
+      d.querySelectorAll("ul").forEach(ul=>{const f=document.createDocumentFragment();ul.querySelectorAll(":scope>li").forEach(li=>{const p=document.createElement("p");p.className="pt";p.innerHTML='<span class="st">★</span> '+li.innerHTML;f.appendChild(p)});ul.replaceWith(f)});
+      d.querySelectorAll("tbody tr").forEach((tr,i)=>tr.className=i%2?"even":"");
+      b+=`<table class="qt" width="100%" cellpadding="0" cellspacing="0"><tr><td class="q">${k}. ${esc(q.q)}</td></tr></table>${d.innerHTML}`}}
+  return {css,b};
+}
+function myDoc(){const {css,b}=myDocParts();
+  const html=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>My written file</title><!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]--><style>@page{size:21cm 29.7cm;margin:1.8cm 1.8cm 1.8cm 1.8cm}${css}</style></head><body>${b}</body></html>`;
+  return new Blob(["﻿",html],{type:"application/msword"});
+}
+function loadScript(src){return new Promise((res,rej)=>{if([...document.scripts].some(s=>s.src===src))return res();const s=document.createElement("script");s.src=src;s.onload=res;s.onerror=()=>rej(new Error("load"));document.head.appendChild(s)})}
+async function myPdf(){
+  await loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
+  await loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js");
+  const F=await fetch("data/pdf-fonts.json").then(r=>{if(!r.ok)throw new Error("fonts");return r.json()});
+  const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:"mm",format:"a4"});
+  doc.addFileToVFS("DV.ttf",F.r);doc.addFont("DV.ttf","DV","normal");doc.addFileToVFS("DVB.ttf",F.b);doc.addFont("DVB.ttf","DV","bold");
+  const W=210,H=297,M=16,CW=W-2*M,BOT=H-16,NAVY=[27,42,78],OR=[232,121,43],INK=[20,33,61];
+  let y=0;
+  function chrome(){doc.setFont("DV","bold");doc.setFontSize(9);doc.setTextColor(123,47,247);doc.text("Highlight medicine",W/2,9,{align:"center"});doc.setDrawColor(...OR);doc.setLineWidth(.5);doc.line(M,11.5,W-M,11.5)}
+  function newPage(){doc.addPage();chrome();y=18}
+  function need(h){if(y+h>BOT)newPage()}
+  chrome();y=20;
+  doc.setFont("DV","bold");doc.setFontSize(20);doc.setTextColor(...NAVY);doc.text("My written file",M,y+4);y+=10;
+  doc.setFont("DV","normal");doc.setFontSize(10);doc.setTextColor(90,102,129);doc.text(myIds().length+" questions with model answers · arranged by lecture",M,y);y+=8;
+  function runs(node,b,hl,out){node.childNodes.forEach(c=>{if(c.nodeType===3)out.push({t:c.textContent,b,hl});else if(c.nodeType===1){const tg=c.tagName;runs(c,b||tg==="STRONG"||tg==="B",hl||tg==="MARK",out)}});return out}
+  function wrapRuns(rs,width,size){ // -> lines of tokens {t,b,hl,w}
+    doc.setFontSize(size);const toks=[];
+    rs.forEach(r=>{r.t.replace(/\s+/g," ").split(/( )/).forEach(p=>{if(p==="")return;doc.setFont("DV",r.b?"bold":"normal");toks.push({t:p,b:r.b,hl:r.hl,w:doc.getTextWidth(p)})})});
+    const lines=[[]];let lw=0;
+    for(const k of toks){if(k.t===" "&&lw===0)continue;
+      if(lw+k.w>width&&k.t!==" "&&lines[lines.length-1].length){const L=lines[lines.length-1];while(L.length&&L[L.length-1].t===" ")L.pop();lines.push([]);lw=0}
+      if(k.w>width){ // very long token: split by chars
+        let s="";for(const ch of k.t){doc.setFont("DV",k.b?"bold":"normal");const w=doc.getTextWidth(s+ch);if(lw+w>width&&s){lines[lines.length-1].push({...k,t:s,w:doc.getTextWidth(s)});lines.push([]);lw=0;s=ch}else s+=ch}
+        doc.setFont("DV",k.b?"bold":"normal");const w=doc.getTextWidth(s);lines[lines.length-1].push({...k,t:s,w});lw+=w;continue}
+      lines[lines.length-1].push(k);lw+=k.w}
+    return lines.filter(l=>l.length);
+  }
+  function drawLines(lines,x,size,lh,color){doc.setFontSize(size);
+    for(const L of lines){need(lh);let cx=x;for(const k of L){doc.setFont("DV",k.b?"bold":"normal");if(k.hl){doc.setFillColor(255,241,118);doc.rect(cx,y-size*.3528*.85,k.w,size*.3528*1.15,"F")}doc.setTextColor(...color);doc.text(k.t,cx,y);cx+=k.w}y+=lh}}
+  function para(node,indent,star){const rs=runs(node,false,false,[]);if(!rs.map(r=>r.t).join("").trim())return;
+    const x=M+indent+(star?4.5:0);const lines=wrapRuns(rs,CW-indent-(star?4.5:0),10);need(5.2);
+    if(star){doc.setFont("DV","bold");doc.setFontSize(9);doc.setTextColor(...OR);doc.text("★",M+indent,y)}
+    drawLines(lines,x,10,5,INK);y+=.6}
+  function table(tb){const head=[...tb.querySelectorAll("thead tr")].map(tr=>[...tr.children].map(c=>c.textContent.trim()));
+    const body=[...tb.querySelectorAll("tbody tr")].map(tr=>[...tr.children].map(c=>c.textContent.trim()));
+    need(14);doc.autoTable({head,body,startY:y,margin:{left:M,right:M,top:18,bottom:16},styles:{font:"DV",fontSize:8.8,cellPadding:1.6,textColor:INK,lineColor:[201,209,227],lineWidth:.2},headStyles:{fillColor:NAVY,textColor:255,fontStyle:"bold"},columnStyles:{0:{fontStyle:"bold"}},alternateRowStyles:{fillColor:[238,243,251]},didDrawPage:()=>chrome()});
+    y=doc.lastAutoTable.finalY+3}
+  function block(el){
+    if(el.nodeType===3){if(el.textContent.trim())para({childNodes:[el]},0,false);return}
+    if(el.nodeType!==1)return;const tg=el.tagName;
+    if(tg==="UL"||tg==="OL"){el.querySelectorAll(":scope>li").forEach(li=>{const sub=li.querySelector("ul");if(sub){const c=li.cloneNode(true);c.querySelector("ul").remove();para(c,1,true);sub.querySelectorAll(":scope>li").forEach(s=>para(s,6,true))}else para(li,1,true)});return}
+    if(tg==="TABLE"){table(el);return}
+    if(el.querySelector("table,ul,ol")){el.childNodes.forEach(block);return}
+    para(el,0,false)}
+  for(const g of myGroups()){
+    need(24);doc.setFillColor(...NAVY);doc.rect(M,y,CW,9,"F");doc.setFillColor(...OR);doc.rect(M,y+9,CW,1,"F");
+    doc.setFont("DV","bold");doc.setFontSize(12);doc.setTextColor(255,255,255);doc.text(g.n,M+3,y+6.2);y+=15;
+    g.qs.forEach((q,i)=>{
+      const lines=wrapRuns([{t:(i+1)+". "+q.q,b:true,hl:false}],CW-9,10.5);const hh=lines.length*5.2+3.4;
+      need(hh+12);doc.setFillColor(255,246,214);doc.rect(M,y,CW,hh,"F");doc.setFillColor(...OR);doc.rect(M,y,1.6,hh,"F");
+      y+=5.3;drawLines(lines,M+5,10.5,5.2,INK);y+=1.4;
+      const d=document.createElement("div");d.innerHTML=q.a;d.childNodes.forEach(block);y+=3});
+    y+=2}
+  const n=doc.getNumberOfPages();for(let p=1;p<=n;p++){doc.setPage(p);doc.setFont("DV","normal");doc.setFontSize(8.5);doc.setTextColor(90,102,129);doc.text(p+" / "+n,W/2,H-8,{align:"center"})}
+  return doc.output("blob");
+}
+async function go(kind,btn){btn.disabled=true;try{
+  if(kind==="doc"){saveBlob(myFileName("doc"),myDoc());toast("Word file downloaded")}
+  else{toast("Making your PDF…");const b=await myPdf();saveBlob(myFileName("pdf"),b);toast("PDF downloaded")}
+ }catch(e){console.error(e);toast("Something went wrong — try again")}btn.disabled=false}
+(async()=>{
+  const m=document.getElementById("m");
+  const ids=decodeURIComponent((location.hash.match(/ids=([^&]*)/)||[])[1]||"").split(",").filter(Boolean).map(x=>/^\d+$/.test(x)?"w"+x:x);
+  try{LECS=await fetch("data/questions.json",{cache:"no-cache"}).then(r=>r.json())}catch(e){m.innerHTML='<div class="card err">Couldn\'t load the questions. Check your connection and refresh.</div>';return}
+  LECS.forEach((l,li)=>l.qs.forEach(q=>{q.li=li;ALL.push(q)}));ids.forEach(i=>S.myf[i]=1);
+  const n=myIds().length;
+  if(!n){m.innerHTML='<div class="card"><h1>No questions selected</h1><p class="sub">Go back to the Written Quiz site, tap <b>📥 Add to your file</b> on the questions you want, then open <b>📁 Your file</b> and tap Download.</p></div>';return}
+  let h=`<div class="card"><h1>📁 Your file is ready</h1><div class="sub">${n} question${n===1?"":"s"} with model answers · arranged by lecture</div><div class="btns"><button id="bd">⬇️ Download Word</button><button id="bp" class="or">⬇️ Download PDF</button></div></div>`;
+  for(const g of myGroups()){h+=`<div class="lec">${esc(g.n)} · ${g.qs.length}</div><div class="box">`+g.qs.map((q,i)=>`<div class="q">${i+1}. ${esc(q.q)}</div>`).join("")+`</div>`}
+  m.innerHTML=h;document.getElementById("bd").onclick=e=>go("doc",e.currentTarget);document.getElementById("bp").onclick=e=>go("pdf",e.currentTarget);
+})();
+</script></body></html>
