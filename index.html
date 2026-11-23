@@ -20,15 +20,15 @@ button.or{background:var(--or)} button:disabled{opacity:.5}
 <header><b>Highlight medicine</b><span>Your written file</span></header>
 <main id="m"><div class="card">Loading…</div></main><div id="toast" hidden></div>
 <script>
-let LECS=[],ALL=[],S={myf:{}};const dl=null;
+let LECS=[],ALL=[],S={myf:{}};let KINDT="My written file";const dl=null;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function toast(m){const t=document.getElementById("toast");t.textContent=m;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,3500)}
 function saveBlob(name,blob){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),30000)}
 function myIds(){return ALL.filter(q=>S.myf&&S.myf[q.id]).map(q=>q.id)}
 function myGroups(){const g=[];LECS.forEach((l,li)=>{const qs=l.qs.filter(q=>S.myf&&S.myf[q.id]);if(qs.length)g.push({n:l.n,qs})});return g}
-function myFileName(ext){const d=new Date();return `My written file - Highlight medicine (${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}).${ext}`}
+function myFileName(ext){const d=new Date();return `${KINDT} - Highlight medicine (${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}).${ext}`}
 function myText(){
-  let t="Highlight medicine — My written file\n\n";
+  let t="Highlight medicine — "+KINDT+"\n\n";
   for(const g of myGroups()){t+="■ "+g.n.toUpperCase()+"\n\n";for(const q of g.qs){const d=document.createElement("div");d.innerHTML=q.a;
     d.querySelectorAll("li").forEach(li=>li.textContent="★ "+li.textContent.trim()+"\n");d.querySelectorAll("tr").forEach(tr=>{tr.textContent=[...tr.children].map(c=>c.textContent.trim()).join(" | ")+"\n"});
     t+="Q: "+q.q+"\n"+d.textContent.replace(/[ \t]+/g," ").replace(/\n\s+/g,"\n").trim()+"\n\n"}}
@@ -43,7 +43,7 @@ function myDocParts(){
   p.pt{margin:1pt 0 1pt 14pt;text-indent:-12pt} .st{color:#e8792b}
   table{border-collapse:collapse;margin:4pt 0 6pt;width:100%} th{background:#1b2a4e;color:#fff;border:.5pt solid #1b2a4e;padding:3pt 5pt;font-size:10pt;text-align:left} td{border:.5pt solid #c9d1e3;padding:3pt 5pt;font-size:10pt} tr.even td{background:#eef3fb}
   mark{background:#fff176}`;
-  let b=`<div class="hdr">Highlight medicine</div><h1>My written file</h1><div class="sub">${myIds().length} questions with model answers · arranged by lecture</div>`;
+  let b=`<div class="hdr">Highlight medicine</div><h1>${KINDT}</h1><div class="sub">${myIds().length} questions with answers · arranged by lecture</div>`;
   for(const g of myGroups()){b+=`<table class="lect" width="100%" cellpadding="0" cellspacing="0"><tr><td class="lec">${esc(g.n)}</td></tr></table>`;let k=0;
     for(const q of g.qs){k++;const d=document.createElement("div");d.innerHTML=q.a;
       d.querySelectorAll("ul").forEach(ul=>{const f=document.createDocumentFragment();ul.querySelectorAll(":scope>li").forEach(li=>{const p=document.createElement("p");p.className="pt";p.innerHTML='<span class="st">★</span> '+li.innerHTML;f.appendChild(p)});ul.replaceWith(f)});
@@ -52,7 +52,7 @@ function myDocParts(){
   return {css,b};
 }
 function myDoc(){const {css,b}=myDocParts();
-  const html=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>My written file</title><!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]--><style>@page{size:21cm 29.7cm;margin:1.8cm 1.8cm 1.8cm 1.8cm}${css}</style></head><body>${b}</body></html>`;
+  const html=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>${KINDT}</title><!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]--><style>@page{size:21cm 29.7cm;margin:1.8cm 1.8cm 1.8cm 1.8cm}${css}</style></head><body>${b}</body></html>`;
   return new Blob(["﻿",html],{type:"application/msword"});
 }
 function loadScript(src){return new Promise((res,rej)=>{if([...document.scripts].some(s=>s.src===src))return res();const s=document.createElement("script");s.src=src;s.onload=res;s.onerror=()=>rej(new Error("load"));document.head.appendChild(s)})}
@@ -68,8 +68,8 @@ async function myPdf(){
   function newPage(){doc.addPage();chrome();y=18}
   function need(h){if(y+h>BOT)newPage()}
   chrome();y=20;
-  doc.setFont("DV","bold");doc.setFontSize(20);doc.setTextColor(...NAVY);doc.text("My written file",M,y+4);y+=10;
-  doc.setFont("DV","normal");doc.setFontSize(10);doc.setTextColor(90,102,129);doc.text(myIds().length+" questions with model answers · arranged by lecture",M,y);y+=8;
+  doc.setFont("DV","bold");doc.setFontSize(20);doc.setTextColor(...NAVY);doc.text(KINDT,M,y+4);y+=10;
+  doc.setFont("DV","normal");doc.setFontSize(10);doc.setTextColor(90,102,129);doc.text(myIds().length+" questions with answers · arranged by lecture",M,y);y+=8;
   function runs(node,b,hl,out){node.childNodes.forEach(c=>{if(c.nodeType===3)out.push({t:c.textContent,b,hl});else if(c.nodeType===1){const tg=c.tagName;runs(c,b||tg==="STRONG"||tg==="B",hl||tg==="MARK",out)}});return out}
   function wrapRuns(rs,width,size){ // -> lines of tokens {t,b,hl,w}
     doc.setFontSize(size);const toks=[];
@@ -118,12 +118,15 @@ async function go(kind,btn){btn.disabled=true;try{
  }catch(e){console.error(e);toast("Something went wrong — try again")}btn.disabled=false}
 (async()=>{
   const m=document.getElementById("m");
-  const ids=decodeURIComponent((location.hash.match(/ids=([^&]*)/)||[])[1]||"").split(",").filter(Boolean).map(x=>/^\d+$/.test(x)?"w"+x:x);
-  try{LECS=await fetch("data/questions.json",{cache:"no-cache"}).then(r=>r.json())}catch(e){m.innerHTML='<div class="card err">Couldn\'t load the questions. Check your connection and refresh.</div>';return}
+  const MCQ=/mcq=/.test(location.hash);
+  const raw=decodeURIComponent((location.hash.match(/(?:ids|mcq)=([^&]*)/)||[])[1]||"").split(",").filter(Boolean);
+  const ids=raw.map(x=>/^\d+$/.test(x)?(MCQ?"ly"+x.padStart(4,"0"):"w"+x):x);
+  if(MCQ){KINDT="My MCQ file";document.title="Your MCQ file · Highlight medicine";const hs=document.querySelector("header span");if(hs)hs.textContent="Your MCQ file"}
+  try{LECS=await fetch(MCQ?"data/mcq.json":"data/questions.json",{cache:"no-cache"}).then(r=>r.json())}catch(e){m.innerHTML='<div class="card err">Couldn\'t load the questions. Check your connection and refresh.</div>';return}
   LECS.forEach((l,li)=>l.qs.forEach(q=>{q.li=li;ALL.push(q)}));ids.forEach(i=>S.myf[i]=1);
   const n=myIds().length;
-  if(!n){m.innerHTML='<div class="card"><h1>No questions selected</h1><p class="sub">Go back to the Written Quiz site, tap <b>📥 Add to your file</b> on the questions you want, then open <b>📁 Your file</b> and tap Download.</p></div>';return}
-  let h=`<div class="card"><h1>📁 Your file is ready</h1><div class="sub">${n} question${n===1?"":"s"} with model answers · arranged by lecture</div><div class="btns"><button id="bd">⬇️ Download Word</button><button id="bp" class="or">⬇️ Download PDF</button></div></div>`;
+  if(!n){m.innerHTML='<div class="card"><h1>No questions selected</h1><p class="sub">Go back to the site, tap <b>📥 Add to your file</b> on the questions you want, then open <b>📁 Your file</b> and tap Download.</p></div>';return}
+  let h=`<div class="card"><h1>📁 Your file is ready</h1><div class="sub">${n} question${n===1?"":"s"} with answers · arranged by lecture</div><div class="btns"><button id="bd">⬇️ Download Word</button><button id="bp" class="or">⬇️ Download PDF</button></div></div>`;
   for(const g of myGroups()){h+=`<div class="lec">${esc(g.n)} · ${g.qs.length}</div><div class="box">`+g.qs.map((q,i)=>`<div class="q">${i+1}. ${esc(q.q)}</div>`).join("")+`</div>`}
   m.innerHTML=h;document.getElementById("bd").onclick=e=>go("doc",e.currentTarget);document.getElementById("bp").onclick=e=>go("pdf",e.currentTarget);
 })();
